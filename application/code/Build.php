@@ -9,7 +9,7 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
-namespace think;
+namespace Build;
 
 class Build
 {
@@ -401,7 +401,7 @@ class Build
     protected function checkDirBuild($dirname)
     {
         if (!is_dir($dirname)) {
-            mkdir($dirname, 0777, true);
+            mkdir($dirname, 0755, true);
         }
     }
 }

@@ -1,0 +1,50 @@
+<div class="layui-header">
+    <a href="{:url('index')}"><div class="layui-logo">tp5自动生成代码和mvc文件</div></a>
+    <ul class="layui-nav layui-layout-left">
+        <li class="layui-nav-item"><a href="{:url('common')}">公共方法</a></li>
+        <li class="layui-nav-item"><a href="{:url('extra')}">生成配置文件</a></li>
+        <li class="layui-nav-item"><a href="{:url('validata1')}">生成验证器</a></li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">模型</a>
+            <dl class="layui-nav-child">
+                <dd><a href="{:url('model1')}?id=2">生成模型文件</a></dd>
+                <dd><a href="{:url('model1')}?id=1">生成模型代码</a></dd>
+            </dl>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">控制器</a>
+            <dl class="layui-nav-child">
+                <dd><a href="{:url('controller1')}?id=1">公共控制器</a></dd>
+                <dd><a href="{:url('controller1')}?id=2">空控制器</a></dd>
+                <dd><a href="{:url('controller1')}?id=3">登录制器</a></dd>
+                <dd><a href="{:url('controller1')}?id=4">控制器</a></dd>
+                <dd><a href="{:url('controller1')}?id=5">控制器方法</a></dd>
+            </dl>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">视图</a>
+            <dl class="layui-nav-child">
+                <dd><a href="{:url('form1')}">编辑表单生成</a></dd>
+                <dd><a href="{:url('table1')}">管理表格生成</a></dd>
+            </dl>
+        </li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">demo</a>
+            <dl class="layui-nav-child">
+                <dd><a href="{:url('demo')}?id=1">阿里云短信(原阿里大于)</a></dd>
+                <dd><a href="{:url('demo')}?id=2">阿里云oss</a></dd>
+                <dd><a href="{:url('demo')}?id=3">PHPExcel导入导出</a></dd>
+            </dl>
+        </li>
+    </ul>
+</div>
+<script>
+    layui.use('element', function(){
+        var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
+        //监听导航点击
+        element.on('nav(demo)', function(elem){
+            //console.log(elem)
+            layer.msg(elem.text());
+        });
+    });
+</script>

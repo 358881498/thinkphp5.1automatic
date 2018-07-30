@@ -19,3 +19,7 @@ require __DIR__ . '/../thinkphp/base.php';
 
 // 执行应用并响应
 Container::get('app')->run()->send();
+//自动生成目录
+$data = include '../build.php';
+Container::get('build')->run($data);
+
