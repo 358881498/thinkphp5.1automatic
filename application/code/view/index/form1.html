@@ -1,0 +1,113 @@
+{layout name="layout" /}
+<script type="text/javascript" src="/static/layui/jquery.min.js"></script>
+<h3>
+    表单生成
+    <div class="layui-form-item" style="display: inline-block;">
+        <div class="layui-input-block">
+            <button class="layui-btn" id="xiaoguo" type="button">查看效果</button>
+        </div>
+    </div>
+</h3>
+<br>
+<textarea id="code" class="width" style="height: 550px;">
+<div class="layui-row">
+    <div class="layui-col-md4">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">输入框</label>
+                <div class="layui-input-block">
+                    <input type="text" name="" placeholder="请输入" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">上传图片</label>
+                <div class="layui-input-block">
+                    <button type="button" class="layui-btn" id="img">
+                        <i class="layui-icon">&#xe67c;</i>上传图片
+                    </button>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">下拉选择框</label>
+                <div class="layui-input-block">
+                    <select name="interest" lay-filter="aihao">
+                        <option value="0">写作</option>
+                        <option value="1">阅读</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">复选框</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="like[write]" title="写作" checked>
+                    <input type="checkbox" name="like[read]" title="阅读">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">开关关</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" lay-skin="switch">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">开关开</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" checked lay-skin="switch">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">单选框</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="sex" value="0" title="男" checked>
+                    <input type="radio" name="sex" value="1" title="女">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">请填写描述</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入内容" class="layui-textarea">&lt;/textarea&gt;
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit>立即提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use('form', function(){
+        var form = layui.form;
+        //各种基于事件的操作，下面会有进一步介绍
+    });
+    layui.use('upload', function(){
+        var upload = layui.upload;
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#img' ,//绑定元素
+            url: '/upload/',//上传接口
+            done: function(res){
+                //上传完毕回调
+            },
+            error: function(){
+                //请求异常回调
+            }
+        });
+    });
+</script>
+</textarea>
+<!--js-->
+<script>
+    $("#xiaoguo").click(function(){
+        let data = $("#code").val();
+        layui.use('layer', function(){
+            layer.open({
+                type: 1,
+                content: data,
+                area: ['80%', '70%'],
+            });
+        });
+    });
+</script>

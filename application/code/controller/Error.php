@@ -9,6 +9,6 @@ class Error extends Controller
     //空控制器
     public function index(Request $request)
     {
-        return $this->error($request->controller().'是空控制器！');
+        return $this->error($request->controller().'是空控制器！');//可跳转到404
     }
 }

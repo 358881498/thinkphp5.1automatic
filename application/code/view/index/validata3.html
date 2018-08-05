@@ -1,0 +1,27 @@
+{layout name="layout" /}
+<h3>验证器代码 - 完成</h3>
+<br>
+<textarea readonly class="width">
+namespace app\{$mokuai}\validate;
+
+use think\Validate;
+
+class {$table|ucfirst} extends Validate
+{
+    protected $rule = [
+    {foreach name="rs" id="r" key="k"}
+        '{$k}' => '{:implode('|',$r)}',
+    {/foreach}
+    ];
+
+    protected $message = [
+    {foreach name="ms" id="m" key="k"}
+        '{$k}' => '{$m}',
+    {/foreach}
+    ];
+    protected $scene = [
+        'add'   =>  [{$fields}],
+        'edit'  =>  [{$fields}],
+    ];
+}
+</textarea>

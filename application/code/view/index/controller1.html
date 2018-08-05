@@ -1,0 +1,206 @@
+{layout name="layout" /}
+<h3>控制器 - 步骤1</h3><br>
+{switch name="type" }
+{case value="1"}
+<h4>公共控制器名字Base</h4>
+<form  class="layui-form" action="{:url('basecontroller')}" method="get">
+    <div class="layui-form-item" style="width: 30%;">
+        <label class="layui-form-label">选择模块：</label>
+        <div class="layui-input-block">
+            <select name="mokuai">
+                <option value="">选择模块</option>
+                {volist name="mokuai" id="vo"}
+                <option value="{$vo}">{$vo}</option>
+                {/volist}
+            </select>
+            <span style="color: red;">未选择,控制器命名默认为index</span>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="basecontroller">公共控制器代码</button>
+        </div>
+    </div>
+</form>
+{/case}
+{case value="2"}
+<hr />
+<form  class="layui-form" action="{:url('errorcontroller')}" method="get">
+    <div class="layui-form-item" style="width: 30%;">
+        <label class="layui-form-label">选择模块：</label>
+        <div class="layui-input-block">
+            <select name="mokuai">
+                <option value="">选择模块</option>
+                {volist name="mokuai" id="vo"}
+                <option value="{$vo}">{$vo}</option>
+                {/volist}
+            </select>
+            <span style="color: red;">未选择,控制器命名默认为index</span>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="errorontroller">空控制器代码</button>
+        </div>
+    </div>
+</form>
+{/case}
+{case value="3"}
+<form  class="layui-form" action="{:url('eventcontroller')}" method="get">
+    <div class="layui-form-item" style="width: 30%;">
+        <label class="layui-form-label">分层控制器名字</label>
+        <div class="layui-input-block">
+            <input type="text" name="event_name" class="layui-input">
+            <span style="color: red;">必填</span>
+        </div>
+    </div>
+    <div class="layui-form-item" style="width: 30%;">
+        <label class="layui-form-label">选择模块：</label>
+        <div class="layui-input-block">
+            <select name="mokuai">
+                <option value="">选择模块</option>
+                {volist name="mokuai" id="vo"}
+                <option value="{$vo}">{$vo}</option>
+                {/volist}
+            </select>
+            <span style="color: red;">未选择,控制器命名默认为index</span>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="logincontroller">分层控制器代码</button>
+        </div>
+    </div>
+</form>
+{/case}
+{case value="4"}
+<h4>
+    1、选择模块后，自动<span style="color: red;">显示选择模型和中间件</span><br><br>
+    2、模型取至数据层模型 -- model文件夹,如果选择的是<span style="color: red;">服务层或逻辑层，请确保逻辑层、服务层有对应的文件</span><br><br>
+    3、如果控制器需要使用中间件<span style="color: red;">请确保http/middleware文件中，有中间件文件</span><br><br>
+    4、<span style="color: red;">资源控制器无需填写，控制器方法名前缀</span><br><br>
+</h4>
+<form  class="layui-form" action="{:url('controller2')}" method="get">
+    <input type="hidden" name="resources" id="resources" />
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <input type="checkbox" name="controller" value="Base" title="是否继承Base公共控制器">
+        </div>
+    </div>
+    <div class="layui-form-item" style="width: 30%;">
+        <label class="layui-form-label">控制器名字</label>
+        <div class="layui-input-block">
+            <input type="text" name="controller_name" class="layui-input">
+            <span style="color: red;">必填</span>
+        </div>
+    </div>
+    <div class="layui-form-item" style="width: 30%;">
+        <label class="layui-form-label">控制器方法名前缀</label>
+        <div class="layui-input-block">
+            <input type="text" name="function_name" class="layui-input">
+            <span style="color: red;">未填写，方法名前缀默认为控制器名字</span>
+        </div>
+    </div>
+    <div class="layui-form-item" style="width: 30%;">
+        <label class="layui-form-label">选择模块：</label>
+        <div class="layui-input-block">
+            <select name="mokuai" lay-filter="mokuai">
+                <option value="">选择模块</option>
+                {volist name="mokuai" id="vo"}
+                <option value="{$vo}">{$vo}</option>
+                {/volist}
+            </select>
+            <span style="color: red;">未选择,控制器命名默认为index</span>
+        </div>
+    </div>
+    <div class="layui-form-item layui-hide" lay-filter="selectmodel1" id="selectmodel1">
+        <label class="layui-form-label">选择分层：</label>
+        <div class="layui-input-block">
+            <input type="radio" name="modelLayer" value="model" title="数据层" checked="checked"/>
+            <input type="radio" name="modelLayer" value="logic" title="逻辑层" />
+            <input type="radio" name="modelLayer" value="service" title="服务层" />
+        </div>
+    </div>
+    <div class="layui-form-item layui-hide" id="selectmodel" style="width: 30%;">
+        <label class="layui-form-label">选择要调用模型：</label>
+        <div class="layui-input-block">
+            <select name="model" lay-filter="model" id="model">
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item layui-hide" id="auth1" style="width: 30%;">
+        <label class="layui-form-label">控制器中间件：</label>
+        <div class="layui-input-block">
+            <select name="auth" id="auth">
+            </select>
+            <span style="color: red;">可选，根据需求选择</span>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="controller2">生成控制器文件</button>
+            <button class="layui-btn layui-btn-warm" lay-submit lay-filter="resources">生成资源控制器文件</button>
+        </div>
+    </div>
+</form>
+{/case}
+{case value="5"}
+<h4>控制器方法代码 -- 只生成控制器方法，对应增删改查4种方法<br><br></h4>
+<form  class="layui-form" action="{:url('controller3')}" method="get">
+    <div class="layui-form-item" style="width: 30%;">
+        <label class="layui-form-label">控制器方法名前缀</label>
+        <div class="layui-input-block">
+            <input type="text" name="function_name" class="layui-input">
+            <span style="color: red;">未填写，方法名前缀默认为index</span>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit>生成控制器文件</button>
+        </div>
+    </div>
+</form>
+{/case}
+{/switch}
+<script type="text/javascript" src="/static/layui/jquery.min.js"></script>
+<script type="text/javascript">
+    layui.use('form', function(){
+        var form = layui.form;
+        //监听提交按钮
+        form.on('submit(resources)', function(data){
+            $("#resources").val(1);
+            return true;
+        });
+        //监听提交按钮
+        form.on('submit(basecontroller)', function(data){
+            return true;
+        });
+        //监听下拉选择
+        form.on('select(mokuai)', function(data){
+            if(data.value == ''){
+                return;
+            }
+            $.ajax({
+                type: 'post',
+                url: 'controller_step2',
+                data: {mokuai:data.value,auth:1},
+                success: function (res) {
+                    $("#model").empty();
+                    $("#model").append("<option>选择模型</option>");
+                    $.each(res.model,function(n,value){
+                        $("#model").append("<option value="+value+">"+value+"</option>");
+                    });
+                    $("#auth").empty();
+                    $("#auth").append("<option>选择中间件</option>");
+                    $.each(res.auth,function(n,value){
+                        $("#auth").append("<option value="+value+">"+value+"</option>");
+                    });
+                    $("#selectmodel1").removeClass("layui-hide")
+                    $("#selectmodel").removeClass('layui-hide');
+                    $("#auth1").removeClass('layui-hide');
+                    form.render('select');
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,235 @@
+{layout name="layout" /}
+<h3>demo</h3>
+<br>
+<h4>控制器代码</h4>
+<textarea readonly style="width: 80%;height: 300px;">
+{switch name="type" }
+{case value="1"}
+    //阿里云短信接口
+    public function sendSms($phone = null, $templateParam = array())
+    {
+        $phone = '';
+        //模板参数，你可以在这里保存在缓存或者cookie等设置有效期以便逻辑发送后用户使用后的逻辑处理
+        $code = 123456;
+        $templateParam = array("code" => $code);
+        $sms = new \demo\Aliyunsms();
+        //在extend下有对应的压缩文件，请解压到当前目录
+        $m = $sms->send($phone,$templateParam);
+        //类中有说明，默认返回的数组格式，如果需要json，在自行修改类，或者在这里将$m转换后在输出
+        print_r($m);
+//        return $m;
+    }
+{/case}
+{case value="2"}
+    //阿里云oss
+    public function oss()
+    {
+        if(!empty($_FILES['img'])){
+            $oss = new \demo\Oss();
+            //在extend下有对应的压缩文件，请解压到当前目录
+            $img = $oss->ossImg($_FILES['img'],'ossimg',0);
+            print_r($img);
+        }
+    }
+{/case}
+{case value="3"}
+    //导出Excel
+    public function exportExcel()
+    {
+        $name = '导出Excel';
+        $header  = ['姓名', '性别', '生日',];
+        $data[] = [
+            'name' => '规范的1',
+            'sex' => '规范的2',
+            'birthday' => '规范的3',
+        ];
+        $export = new \demo\Excel();
+        //在vendor下有对应的压缩文件，请解压到当前目录
+        $export->export($name, $header,$data);
+    }
+{/case}
+{/switch}
+
+</textarea>
+{switch name="type" }
+{case value="1"}
+<h3 style="color: red;">extend/demo/Aliyunsms.php</h3>
+<textarea readonly style="width: 80%;height: 500px;">
+namespace Demo;
+use Aliyun\Core\Config;
+use Aliyun\Core\Profile\DefaultProfile;
+use Aliyun\Core\DefaultAcsClient;
+use Aliyun\Api\Sms\Request\V20170525\SendSmsRequest;
+//路径  extend/aliyunsms
+require_once EXTEND_PATH.'aliyunsms/vendor/autoload.php';
+Config::load();
+class Aliyunsms
+{
+    public $accessKeyId = ''; //阿里云短信获取的accessKeyId
+    public $accessKeySecret = ''; //阿里云短信获取的accessKeySecret
+    public $signName = '';    //短信签名，要审核通过
+    public $templateCode = 'SMS_';    //短信模板ID，记得要审核通过的
+    //发送短信消息
+    public function send($mobile,$templateParam)
+    {
+        //获取成员属性
+        $accessKeyId     = $this->accessKeyId;
+        $accessKeySecret = $this->accessKeySecret;
+        $signName        = $this->signName;
+        $templateCode    = $this->templateCode;
+        //短信API产品名（短信产品名固定，无需修改）
+        $product = "Dysmsapi";
+        //短信API产品域名（接口地址固定，无需修改）
+        $domain = "dysmsapi.aliyuncs.com";
+        //暂时不支持多Region（目前仅支持cn-hangzhou请勿修改）
+        $region = "cn-hangzhou";
+        // 初始化用户Profile实例
+        $profile = DefaultProfile::getProfile($region, $accessKeyId, $accessKeySecret);
+        // 增加服务结点
+        DefaultProfile::addEndpoint("cn-hangzhou", "cn-hangzhou", $product, $domain);
+        // 初始化AcsClient用于发起请求
+        $acsClient= new DefaultAcsClient($profile);
+        // 初始化SendSmsRequest实例用于设置发送短信的参数
+        $request = new SendSmsRequest();
+        // 必填，设置雉短信接收号码
+        $request->setPhoneNumbers($mobile);
+        // 必填，设置签名名称
+        $request->setSignName($signName);
+        // 必填，设置模板CODE
+        $request->setTemplateCode($templateCode);
+        // 可选，设置模板参数
+        if($templateParam) {
+            $request->setTemplateParam(json_encode($templateParam));
+        }
+        //发起访问请求
+        $acsResponse = $acsClient->getAcsResponse($request);
+        //返回请求结果，这里为为数组格式
+        $result = json_decode(json_encode($acsResponse),true);
+        return $result;
+    }
+}
+</textarea>
+{/case}
+{case value="2"}
+<h3 style="color: red;">extend/demo/Oss.php</h3>
+<textarea readonly style="width: 80%;height: 500px;">
+namespace Demo;
+use OssClient;
+//路径  extend/OSS
+class Oss
+{
+    //OOS 配置
+    public $OSS_ACCESS_ID = '';
+    public $OSS_ACCESS_KEY = '';
+    public $OSS_ENDPOINT = '';
+    public $OSS_TEST_BUCKET = '';
+    //oss文件上传配置
+    public $OSS_MAXSIZE = '1048576';    //1M
+    public $OSS_EXTS = array(// 设置附件上传类型
+        'image/jpg',
+        'image/gif',
+        'image/png',
+        'image/jpeg',
+        'application/octet-stream',//阿里云好像都是通过二进制上传，似乎上面4个后缀设置起到什么用？
+    );
+    //oss
+    public function ossImg($fFiles = null,$name = null,$isthumb = 0){
+        if($fFiles == null || $name == null){
+            var_dump(null);
+            die();
+        }
+        //oss上传
+        $bucketName = $this->OSS_TEST_BUCKET;
+        $ossClient = new \OSS\OssClient($this->OSS_ACCESS_ID, $this->OSS_ACCESS_KEY, $this->OSS_ENDPOINT, false);
+        //图片
+        $rs = $this->ossUpPic($fFiles,$name,$ossClient,$bucketName,$isthumb);
+        if($rs['code']==1){
+            //图片
+            $img['img'] = $rs['msg'];
+            //如返回里面有缩略图：
+            if(!empty($rs['thumb'])){
+                $img['thumb'] = $rs['thumb'];
+            }
+            return $img;
+        }else{
+            $this->error('图片有误：'.$rs['msg']);
+            return;
+        }
+    }
+    function ossUpPic($fFiles,$name,$ossClient,$bucketName,$isThumb=0){
+        $fType = $fFiles['type'];
+        $back = array(
+            'code'=>0,
+            'msg'=>'',
+        );
+        if(!in_array($fType, $this->OSS_EXTS)){
+            $back['msg']='文件格式不正确';
+            return $back;
+            exit;
+        }
+        $fSize = $fFiles['size'];
+        if($fSize > $this->OSS_MAXSIZE){
+            $back['msg'] = '文件超过了1M';
+            return $back;
+            exit;
+        }
+        $fname = $fFiles['name'];
+        $ext = substr($fname,stripos($fname,'.'));
+        $fup_n = $fFiles['tmp_name'];
+        $file_n = time().'_'.rand(100,999);
+        $object = $name."/".$file_n.$ext;//目标文件名
+        if (is_null($ossClient)){
+            exit(1);
+        };
+        $ossClient->uploadFile($bucketName, $object, $fup_n);
+        if($isThumb == 1){
+            $back['thumb']= $object."?x-oss-process=image/resize,h_300,w_300";
+        }
+        $back['code']=1;
+        $back['msg'] = $object;
+        return $back;
+    }
+
+}
+</textarea>
+{/case}
+{case value="3"}
+<h3 style="color: red;">extend/demo/Excel.php</h3>
+<textarea readonly style="width: 80%;height: 500px;">
+namespace Demo;
+//路径  vendor/PHPExcel
+class Excel
+{
+    //导出
+    public function export($name, $header,$data){
+        vendor("PHPExcel.PHPExcel");
+        $PHPExcel = new \PHPExcel();
+        $PHPSheet = $PHPExcel->getActiveSheet();
+        $PHPSheet->setTitle($name);
+        $key = $this->letter();
+        foreach($header as $k=>$v){
+            $PHPSheet->setCellValue($key[$k].'1',$v);
+        }
+        $i=2;
+        foreach($data as $k=>$v){
+            $ii = 0;
+            foreach($v as $k1=>$v1){
+                $PHPSheet->setCellValue($key[$ii].$i,$v1);
+                $ii++;
+            }
+            $i++;
+        }
+        $PHPWriter = \PHPExcel_IOFactory::createWriter($PHPExcel, "Excel2007");
+        header('Content-Disposition: attachment;filename="'.$name.'.xlsx"');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $PHPWriter->save("php://output");
+    }
+    //字母数组
+    public function letter() {
+        $data = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+        return $data;
+    }
+}
+</textarea>
+{/case}
+{/switch}

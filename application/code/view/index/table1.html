@@ -1,0 +1,50 @@
+{layout name="layout" /}
+<script type="text/javascript" src="/static/layui/jquery.min.js"></script>
+<h3>
+    表格生成
+    <div class="layui-form-item" style="display: inline-block;">
+        <div class="layui-input-block">
+            <button class="layui-btn" id="xiaoguo" type="button">查看效果</button>
+        </div>
+    </div>
+</h3>
+<br>
+<textarea id="code" class="width" style="height: 550px;">
+    <table id="demo" lay-filter="test"></table>
+<script>
+    layui.use('table', function(){
+        var table = layui.table;
+        table.render({
+            elem: '#demo',
+            url: '/demo/table/user/', //数据接口
+            page: true, //开启分页
+            cols: [[ //表头
+                {field: 'id', title: 'ID', sort: true, fixed: 'left'},
+                {field: 'username', title: '用户名'},
+                {field: 'sex', title: '性别'},
+                {field: 'city', title: '城市'},
+                {field: 'sign', title: '签名'},
+                {field: 'experience', title: '积分', sort: true},
+                {field: 'score', title: '评分', sort: true},
+                {field: 'classify', title: '职业'},
+                {field: 'wealth', title: '财富'},
+                {field: 'set', title: '操作'}
+            ]]
+        });
+    });
+</script>
+</textarea>
+<!--js-->
+<script>
+    $("#xiaoguo").click(function(){
+        let data = $("#code").val();
+        layui.use('layer', function(){
+            layer.open({
+                type: 1,
+                content: data,
+                offset: 'auto',
+                area: ['80%', '300px']
+            });
+        });
+    });
+</script>

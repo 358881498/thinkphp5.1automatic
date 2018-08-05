@@ -1,0 +1,128 @@
+{layout name="layout" /}
+{eq name='type' value='1'}
+<h3>模型代码生成 - 步骤1</h3>
+<h4>
+    1、选择模块，用于空间命名 -- 未选择默认为index模块<br><br>
+    2、模型分层，区分模型层和命名空间<br><br>
+    3、选择表，生成对应表的模型代码<br><br>
+    4、当表里存在<span style="color: red;">字段名为create_time、update_time</span>的时，模型会生成自动时间戳的代码<br><br>
+    5、当表里存在<span style="color: red;">备注为软删除的字段</span>时，模型会生成软删除代码<br><br>
+    6、当表里存在<span style="color: red;">datetime、timestamp的时间戳字段类型</span>时，模型会生成类型转换代码<br><br>
+    7、<span style="color: red;">模型分层（数据层、逻辑层、服务层）</span>，是从TP5.0 过来的，虽然5.1手册中没有了模型分层的介绍，但5.1还是保留了分层，只是需要自己创建了<br><br>
+    8、<span style="color: red;">模型分层根据实际情况自己创建</span>，数据层 = model<br><br>
+    9、当模型为数据层，且<span style="color: red;">表备注出现中间表或关联表三个字</span>时，模型会生成中间表模型代码<br><br>
+</h4>
+<form  class="layui-form" action="{:url('model2')}" method="get">
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <input type="checkbox" name="model" value="Base" title="是否继承Base公共模型">
+        </div>
+    </div>
+    <div class="layui-form-item" style="width: 30%;">
+        <label class="layui-form-label">选择模块：</label>
+        <div class="layui-input-block">
+            <select name="mokuai">
+                <option value="">选择模块</option>
+                {volist name="mokuai" id="vo"}
+                <option value="{$vo}">{$vo}</option>
+                {/volist}
+            </select>
+            <span style="color: red;">未选择默认为index模块</span>
+        </div>
+    </div>
+    <div class="layui-form-item"    >
+        <label class="layui-form-label">选择分层：</label>
+        <div class="layui-input-block">
+            <input type="radio" name="modelLayer" value="model" title="数据层" checked="checked"/>
+            <input type="radio" name="modelLayer" value="logic" title="逻辑层" />
+            <input type="radio" name="modelLayer" value="service" title="服务层" />
+        </div>
+    </div>
+    <div class="layui-form-item" style="width: 30%;">
+        <label class="layui-form-label">选择表：</label>
+        <div class="layui-input-block">
+            <select name="table">
+                <option value="">选择表</option>
+                {volist name="tables" id="vo"}
+                <option value="{$vo.Name}">{$vo.Name} -- {$vo.Comment}</option>
+                {/volist}
+            </select>
+            <span style="color: red;">必选</span>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="modelcode">模型代码生成</button>
+        </div>
+    </div>
+</form>
+{else/}
+<h3>模型文件生成 - 步骤1</h3>
+<h4>
+    1、选择模块，用于空间命名<br><br>
+    2、模型分层，区分模型层和命名空间<br><br>
+    3、不选择表，则<span style="color: red;">生成所有表对应的模型文件</span>，选择后<span style="color: red;">生成对应表的一个模型文件</span><br><br>
+    4、当表里存在<span style="color: red;">字段名为create_time、update_time</span>的时，模型会生成自动时间戳的代码<br><br>
+    5、当表里存在<span style="color: red;">备注为软删除的字段</span>时，模型会生成软删除代码<br><br>
+    6、当表里存在<span style="color: red;">datetime、timestamp的时间戳字段类型</span>时，模型会生成类型转换代码<br><br>
+    7、<span style="color: red;">模型分层（数据层、逻辑层、服务层）</span>，是从TP5.0 过来的，虽然5.1手册中没有了模型分层的介绍，但5.1还是保留了分层，只是需要自己创建了<br><br>
+    8、<span style="color: red;">模型分层根据实际情况自己创建</span>，数据层 = model<br><br>
+    9、当模型为数据层，且<span style="color: red;">表备注出现中间表或关联表三个字</span>时，模型会生成中间表模型代码<br><br>
+</h4>
+<form  class="layui-form" action="{:url('model3')}" method="get">
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <input type="checkbox" name="model" value="Base" title="是否继承Base公共模型">
+        </div>
+    </div>
+    <div class="layui-form-item" style="width: 30%;">
+        <label class="layui-form-label">选择模块：</label>
+        <div class="layui-input-block">
+            <select name="mokuai">
+                <option value="">选择模块</option>
+                {volist name="mokuai" id="vo"}
+                <option value="{$vo}">{$vo}</option>
+                {/volist}
+            </select>
+            <span style="color: red;">未选择默认为index模块</span>
+        </div>
+    </div>
+    <div class="layui-form-item"    >
+        <label class="layui-form-label">选择分层：</label>
+        <div class="layui-input-block">
+            <input type="radio" name="modelLayer" value="model" title="数据层" checked="checked"/>
+            <input type="radio" name="modelLayer" value="logic" title="逻辑层" />
+            <input type="radio" name="modelLayer" value="service" title="服务层" />
+        </div>
+    </div>
+    <div class="layui-form-item" style="width: 30%;">
+        <label class="layui-form-label">选择表：</label>
+        <div class="layui-input-block">
+            <select name="table">
+                <option value="">选择表</option>
+                {volist name="tables" id="vo"}
+                <option value="{$vo.Name}">{$vo.Name} -- {$vo.Comment}</option>
+                {/volist}
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="modelfiles">模型文件生成</button>
+        </div>
+    </div>
+</form>
+{/eq}
+<script>
+    layui.use('form', function(){
+        var form = layui.form;
+        //监听提交
+        form.on('submit(modelcode)', function(data){
+            return true;
+        });
+        //监听提交
+        form.on('submit(modelfiles)', function(data){
+            return true;
+        });
+    });
+</script>

@@ -1,0 +1,104 @@
+{layout name="layout" /}
+<style>
+    .layui-input{
+        width: 150px;
+        display: inline-block;
+    }
+    .layui-form-label1{
+        float: left;
+        display: block;
+        padding: 9px 15px;
+        font-weight: 400;
+        line-height: 20px;
+        text-align: right;
+    }
+    .layui-form-select{
+        display: inline-block;
+    }
+</style>
+<h2>验证器 - 步骤1</h2><br>
+<form class="layui-form" action="{:url('validata3')}" style="width: 90%;">
+    <input type="hidden" name="table" value="{$Think.get.table}">
+    <input type="hidden" name="validata_name" value="{$validata_name}">
+    <input type="hidden" name="is_code">
+    <div class="layui-form-item">
+        <label>验证器名：{$validata_name}</label><br />
+        <label style="color: red;">字段名后面的复选框为场景验证，只验证已点击字段（如果未点击，默认场景验证为全部字段）</label>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label1">选择模块</label>
+        <div class="layui-input-block">
+            <select name="mokuai">
+                <option value="">选择模块</option>
+                {volist name="mokuai" id="vo"}
+                <option value="{$vo}">{$vo}</option>
+                {/volist}
+            </select>
+            <span style="color: red;">未选择，验证器命名默认为index</span>
+        </div>
+    </div>
+    {volist name="cls" id="vo"}
+    {neq name="$vo.Key" value="PRI"}
+    <div class="layui-form-item">
+        <label class="layui-form-label1">{$vo.Comment}</label>
+        <div class="layui-input-block" >
+            <input type="checkbox" lay-skin="primary" title="{$vo.Field}" name="{$vo.Field}">
+            <input type="text" name="{$vo.Field}_name" placeholder="验证别名" class="layui-input">
+            <span style="color: red;">例子：{$vo.Field}字段，有别名（{$vo.Comment}）-- {$vo.Comment}不能为空，无别名--{$vo.Field}不能为空</span>
+        </div>
+        <div class="layui-input-block">
+            <input type="checkbox" name="{$vo.Field}_require" lay-skin="primary"title="必填">
+            <input type="checkbox" name="{$vo.Field}_number" lay-skin="primary"title="整数">
+            <input type="checkbox" name="{$vo.Field}_float" lay-skin="primary"title="小数">
+            <input type="checkbox" name="{$vo.Field}_boolean" lay-skin="primary"title="布尔">
+            <input type="checkbox" name="{$vo.Field}_email" lay-skin="primary"title="email">
+            <input type="checkbox" name="{$vo.Field}_accepted" lay-skin="primary"title="yes/no">
+            <input type="checkbox" name="{$vo.Field}_date" lay-skin="primary"title="日期">
+            <input type="checkbox" name="{$vo.Field}_alpha" lay-skin="primary"title="字母">
+            <input type="checkbox" name="{$vo.Field}_array" lay-skin="primary"title="数组">
+            <input type="checkbox" name="{$vo.Field}_alphaNum" lay-skin="primary"title="字母数字">
+            <input type="checkbox" name="{$vo.Field}_alphaDash" lay-skin="primary"title="字母数字-_">
+            <input type="checkbox" name="{$vo.Field}_activeUrl" lay-skin="primary"title="域名/ip">
+            <input type="checkbox" name="{$vo.Field}_phone" lay-skin="primary"title="电话">
+            <input type="checkbox" name="{$vo.Field}_shen" lay-skin="primary"title="身份证">
+            <input type="checkbox" name="{$vo.Field}_url" lay-skin="primary"title="url">
+            <input type="checkbox" name="{$vo.Field}_ip" lay-skin="primary"title="ip">
+            <input type="text" name="{$vo.Field}_regex" placeholder="正则" class="layui-input">
+            <select name="{$vo.Field}_confirm">
+                <option value="">和某字段相同</option>
+                {volist name="cls" id="vi"}
+                <option value="{$vi.Field}">{$vi.Field}</option>
+                {/volist}
+            </select>
+            <input type="number" name="{$vo.Field}_max" placeholder="最大值" class="layui-input">
+            <input type="number" name="{$vo.Field}_min" placeholder="最小值" class="layui-input">
+            <input type="date" name="{$vo.Field}_before" placeholder="时间之前" class="layui-input">
+            <input type="date" name="{$vo.Field}_after" placeholder="时间之后" class="layui-input">
+        </div>
+    </div>
+    {/neq}
+    {/volist}
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">生成代码</button>
+            <button class="layui-btn layui-btn-warm" lay-submit lay-filter="formDemo1">生成文件</button>
+        </div>
+    </div>
+</form>
+<script>
+    //Demo
+    layui.use('form', function(){
+        var form = layui.form;
+        //监听提交
+        //生成代码
+        form.on('submit(formDemo)', function(data){
+            $(data.form.is_code).val(1);
+            return true;
+        });
+        //生成文件
+        form.on('submit(formDemo1)', function(data){
+            $(data.form.is_code).val(2);
+            return true;
+        });
+    });
+</script>

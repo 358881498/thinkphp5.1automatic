@@ -1,0 +1,255 @@
+{layout name="layout" /}
+<h3>
+    {if condition="$modelLayer eq 'model'"}
+    数据层 模型代码生成 - 步骤2 - 完成
+    {elseif condition="$modelLayer eq 'logic'"/}
+    逻辑层 模型代码生成 - 步骤2 - 完成
+    {else /}
+    服务层 模型代码生成 - 步骤2 - 完成
+    {/if}
+</h3>
+{if condition="$modelLayer eq 'model'"}
+文件目录application/模块/model<br>
+<font color="red" size="2">
+    {eq name="associated" value='1'}
+        数据层 -- 中间表模型<br>
+    {else/}
+        数据层 -- 根据需求绑定关联模型<br>
+    {/eq}
+</font><br>
+{elseif condition="$modelLayer eq 'logic'"/}
+文件目录application/模块/logic<br>
+<font color="red" size="2">
+    逻辑层 -- 有10个常用的方法，调用数据层模型进行增删改查<br>
+    我一般在逻辑层 调用数据层模型 和对得到的数据进行 递归之类 的处理或其他的 逻辑处理<br>
+</font><br>
+{else /}
+文件目录application/模块/service<br>
+<font color="red" size="2">
+    服务层 -- 与控制器进行交互，调用逻辑层模型<br>
+    我一般在服务层 处理请求参数，调用逻辑层模型<br>
+</font><br>
+{/if}
+<textarea readonly style="width: 100%; height: 750px; font-family: &quot;Courier New&quot;; font-size: 12px; line-height: 1.5;">
+{if condition="$modelLayer eq 'model'"}
+{eq name="associated" value='1'}
+namespace app\index\model\{$table};
+
+use think\model\Pivot;
+
+class {$table} extends Pivot
+{
+
+{eq name="autotime" value='1'}
+    //设置自动写入时间戳的字段类型
+    protected $autoWriteTimestamp = '{$type}';
+{/eq}
+}
+{else/}
+namespace app\{$mokuai}\model;
+use think\Model;
+{notempty name="issoftdelete"}
+use traits\model\SoftDelete;
+{/notempty}
+//模型 -- 绑定关联模型
+class {$table} extends {$model}
+
+{
+    //绑定表
+    protected $table = '{$table}';
+    //绑定主键
+    protected $pk = '{$pk}';
+{eq name="issoftdelete" value='1'}
+    //使用软删除
+    use SoftDelete;
+    //设置软删除字段
+    protected $deleteTime = '{$delfield}';
+{/eq}
+{eq name="autotime" value='1'}
+    //设置自动写入时间戳的字段类型
+    protected $autoWriteTimestamp = '{$type}';
+{/eq}
+{notempty name="time"}
+    //设置类型自动转换
+    protected $type = [
+{volist name="time" id="data"}
+        '{$data.Field}' => '{$data.type}',
+{/volist}
+
+    ];
+{/notempty}
+
+    // 模型初始化
+    protected static function init()
+    {
+        //TODO:初始化内容
+    }
+
+    //一对一关联模型
+    public function hasOne1()
+    {
+        return $this->hasOne('');
+    }
+    //一对多关联模型
+    public function hasMany1()
+    {
+        return $this->hasMany('');
+    }
+    /远程一对多关联模型
+    public function topics1()
+    {
+        return $this->hasManyThrough('','');
+    }
+    //一对一、一对多的相对关联模型
+    public function belongsTo1()
+    {
+        return $this->belongsTo('');
+    }
+    //多对多关联模型
+    public function belongsToMany1()
+    {
+        return $this->belongsToMany('');
+    }
+
+}
+{/eq}
+{elseif condition="$modelLayer eq 'logic'"/}
+namespace app\{$mokuai}\{$modelLayer};
+use think\Model;
+//逻辑层模型 -- 调用数据层模型 -- 编写其他逻辑
+class {$table} extends Model
+{
+    //获取多条数据
+    public function getAll($where = null)
+    {
+        $res = model('{$table}')
+            ->all($where);
+        return $res;
+    }
+    //获取分页数据
+    public function getPage($where = null)
+    {
+        $res = model('{$table}')
+            ->where($where)
+            ->paginate(config("list_rows"),false,['query'=>request()->param()]);
+        return $res;
+    }
+    //获取一条数据
+    public function getOne($where = 1)
+    {
+        //默认获取主键为1的数据
+        $res = model('{$table}')
+            ->get($where);
+        return $res;
+    }
+    //查找并更新
+    public function getAndEdit($where = null, $data = null)
+    {
+        if(empty($data) || empty($where)){
+            return '$data或$where变量为空';
+        }
+        //默认获取主键为1的数据
+        $res = model('{$table}')
+            ->get($where)
+            ->save($data);
+        return $res;
+    }
+    //主键更新
+    public function updateid($data)
+    {
+        $res = model('{$table}')
+            ->update($data);
+        return $res;
+    }
+    //条件更新
+    public function updateWhere($data,$where)
+    {
+        $res = model('{$table}')
+            ->where($where)
+            ->update($data);
+        return $res;
+    }
+    //批量更新
+    public function allSave($data)
+    {
+        //$data必须为二维数组
+        $res = model('{$table}')
+            ->saveAll($data);
+        return $res;
+    }
+    //add -- 过滤非数据表字段
+    public function add($data)
+    {
+        //返回自增主键
+        $res = model('{$table}')
+            ->allowField(true)
+            ->save($data);
+        return $res->{$pk};;
+    }
+    //批量add
+    public function addAll($data)
+    {
+        //$data必须为二维数组
+        $res = model('{$table}')
+            ->saveAll($data);
+        return $res;
+    }
+    //delete
+    public function del($where)
+    {
+        $res = model('{$table}')
+            ->destroy($where);
+        return $res
+    }
+}
+{else /}
+namespace app\{$mokuai}\{$modelLayer};
+use think\Model;
+//服务层模型 -- 调用逻辑层模型 -- 与控制器交互
+class {$table} extends Model
+{
+    //查询
+    public function findData()
+    {
+        $where = $this->getWhere(input('param.'));
+        $data = model('{$table}','logic')
+            ->getAll($where);
+        return $data;
+    }
+    //添加
+    public function add()
+    {
+        $post = $this->getData(input('param.'));
+        $data = model('{$table}','logic')
+            ->add($post);
+        return $data;
+    }
+    //编辑
+    public function edit()
+    {
+        $post = $this->getData(input('param.'));
+        $data = model('{$table}','logic')
+            ->updateWhere($post);
+        return $data;
+    }
+    //删除
+    public function del()
+    {
+        $where = $this->getWhere(input('param.'));
+        $data = model('{$table}','logic')
+            ->del($where);
+        return $data;
+    }
+    //组成数据
+    public function getData($data = null)
+    {
+        return $data;
+    }
+    //组成查询条件
+    public function getWhere($where = null)
+    {
+        return $where;
+    }
+}
+{/if}
+</textarea>
