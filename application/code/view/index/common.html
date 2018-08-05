@@ -22,27 +22,6 @@ function dd($data){
     print_r($data);
     return;
 }
-//请求返回json
-function resJson($code = 0, $data = '',$message = ''){
-    //调用配置文件中定义好的常量
-    $res = [
-        'message' => config($code)['message'],
-        'data' => $data,
-    ];
-    if(!empty($message)){
-        $res['message'] = $message;
-    }
-    return json($res);
-}
-//请求返回array
-function returnArr($code = 0, $message = ''){
-    //调用配置文件中定义好的常量
-    $res = config($code)['message'];
-    if(!empty($message)){
-        $res['message'] = $message;
-    }
-    return $res;
-}
 //递归
 function recursive($list, $parent_id=0){
     $arr = array();
