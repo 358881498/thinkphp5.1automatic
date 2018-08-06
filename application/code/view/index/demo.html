@@ -197,12 +197,11 @@ class Oss
 <h3 style="color: red;">extend/demo/Excel.php</h3>
 <textarea readonly style="width: 80%;height: 500px;">
 namespace Demo;
-//路径  vendor/PHPExcel
+use PHPExcel;
 class Excel
 {
     //导出
     public function export($name, $header,$data){
-        vendor("PHPExcel.PHPExcel");
         $PHPExcel = new \PHPExcel();
         $PHPSheet = $PHPExcel->getActiveSheet();
         $PHPSheet->setTitle($name);

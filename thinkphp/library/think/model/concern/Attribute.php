@@ -79,12 +79,6 @@ trait Attribute
     private $origin = [];
 
     /**
-     * 动态获取器
-     * @var array
-     */
-    private $withAttr = [];
-
-    /**
      * 获取模型对象的主键
      * @access public
      * @return string|array
@@ -448,18 +442,9 @@ trait Attribute
         }
 
         // 检测属性获取器
-        $fieldName = Loader::parseName($name);
-        $method    = 'get' . Loader::parseName($name, 1) . 'Attr';
+        $method = 'get' . Loader::parseName($name, 1) . 'Attr';
 
-        if (isset($this->withAttr[$fieldName])) {
-            if ($notFound && $relation = $this->isRelationAttr($name)) {
-                $modelRelation = $this->$relation();
-                $value         = $this->getRelationData($modelRelation);
-            }
-
-            $closure = $this->withAttr[$fieldName];
-            $value   = $closure($value, $this->data);
-        } elseif (method_exists($this, $method)) {
+        if (method_exists($this, $method)) {
             if ($notFound && $relation = $this->isRelationAttr($name)) {
                 $modelRelation = $this->$relation();
                 $value         = $this->getRelationData($modelRelation);
@@ -598,16 +583,4 @@ trait Attribute
         return $value;
     }
 
-    /**
-     * 动态设置获取器
-     * @access protected
-     * @param  array        $attrs 值
-     * @return $this
-     */
-    public function setModelAttrs(array $attrs = [])
-    {
-        $this->withAttr = $attrs;
-
-        return $this;
-    }
 }

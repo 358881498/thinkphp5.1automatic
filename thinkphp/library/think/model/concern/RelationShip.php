@@ -171,11 +171,10 @@ trait RelationShip
     /**
      * 查询当前模型的关联数据
      * @access public
-     * @param  string|array $relations          关联名
-     * @param  array        $withRelationAttr   关联获取器
+     * @param  string|array $relations 关联名
      * @return $this
      */
-    public function relationQuery($relations, $withRelationAttr = [])
+    public function relationQuery($relations)
     {
         if (is_string($relations)) {
             $relations = explode(',', $relations);
@@ -198,16 +197,9 @@ trait RelationShip
                 list($relation, $subRelation) = explode('.', $relation, 2);
             }
 
-            $method       = Loader::parseName($relation, 1, false);
-            $relationName = Loader::parseName($relation);
+            $method = Loader::parseName($relation, 1, false);
 
-            $relationResult = $this->$method();
-
-            if (isset($withRelationAttr[$relationName])) {
-                $relationResult->withAttr($withRelationAttr[$relationName]);
-            }
-
-            $this->relation[$relation] = $relationResult->getRelation($subRelation, $closure);
+            $this->relation[$relation] = $this->$method()->getRelation($subRelation, $closure);
         }
 
         return $this;
@@ -216,12 +208,11 @@ trait RelationShip
     /**
      * 预载入关联查询 返回数据集
      * @access public
-     * @param  array  $resultSet        数据集
-     * @param  string $relation         关联名
-     * @param  array  $withRelationAttr 关联获取器
+     * @param  array  $resultSet 数据集
+     * @param  string $relation  关联名
      * @return array
      */
-    public function eagerlyResultSet(&$resultSet, $relation, $withRelationAttr = [])
+    public function eagerlyResultSet(&$resultSet, $relation)
     {
         $relations = is_string($relation) ? explode(',', $relation) : $relation;
 
@@ -241,28 +232,20 @@ trait RelationShip
                 list($relation, $subRelation) = explode('.', $relation, 2);
             }
 
-            $relation     = Loader::parseName($relation, 1, false);
-            $relationName = Loader::parseName($relation);
+            $relation = Loader::parseName($relation, 1, false);
 
-            $relationResult = $this->$relation();
-
-            if (isset($withRelationAttr[$relationName])) {
-                $relationResult->withAttr($withRelationAttr[$relationName]);
-            }
-
-            $relationResult->eagerlyResultSet($resultSet, $relation, $subRelation, $closure);
+            $this->$relation()->eagerlyResultSet($resultSet, $relation, $subRelation, $closure);
         }
     }
 
     /**
      * 预载入关联查询 返回模型对象
      * @access public
-     * @param  Model  $result           数据对象
-     * @param  string $relation         关联名
-     * @param  array  $withRelationAttr 关联获取器
+     * @param  Model  $result   数据对象
+     * @param  string $relation 关联名
      * @return Model
      */
-    public function eagerlyResult(&$result, $relation, $withRelationAttr = [])
+    public function eagerlyResult(&$result, $relation)
     {
         $relations = is_string($relation) ? explode(',', $relation) : $relation;
 
@@ -282,16 +265,9 @@ trait RelationShip
                 list($relation, $subRelation) = explode('.', $relation, 2);
             }
 
-            $relation     = Loader::parseName($relation, 1, false);
-            $relationName = Loader::parseName($relation);
+            $relation = Loader::parseName($relation, 1, false);
 
-            $relationResult = $this->$relation();
-
-            if (isset($withRelationAttr[$relationName])) {
-                $relationResult->withAttr($withRelationAttr[$relationName]);
-            }
-
-            $relationResult->eagerlyResult($result, $relation, $subRelation, $closure);
+            $this->$relation()->eagerlyResult($result, $relation, $subRelation, $closure);
         }
     }
 

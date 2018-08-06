@@ -156,6 +156,11 @@ class RuleItem extends Rule
         // 合并分组参数
         $option = $this->mergeGroupOptions();
 
+        // 检查前置行为
+        if (isset($option['before']) && false === $this->checkBefore($option['before'])) {
+            return false;
+        }
+
         $url = $this->urlSuffixCheck($request, $url, $option);
 
         if (is_null($match)) {
@@ -163,11 +168,6 @@ class RuleItem extends Rule
         }
 
         if (false !== $match) {
-            // 检查前置行为
-            if (isset($option['before']) && false === $this->checkBefore($option['before'])) {
-                return false;
-            }
-
             return $this->parseRule($request, $this->rule, $this->route, $url, $option, $match);
         }
 

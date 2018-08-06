@@ -59,7 +59,7 @@ class Index extends Base
         $auth = input('auth');
         $function_name = empty($function_name) ? $controller_name:$function_name;
         $model = empty($model) ? 'model':$model;
-        $controller = empty($controller) ? 'Model':$controller;
+        $controller = empty($controller) ? 'Controller':$controller;
         $mokuai = empty($mokuai) ? 'index':$mokuai;
         $modelbuild = $this->cbuild($mokuai,'controller',$controller_name);
         $resources = input('resources');
@@ -76,6 +76,7 @@ class Index extends Base
         $txt = "<?php
 namespace app\\$mokuai\\controller;
 use think\\Controller;
+//".ucfirst($controller_name)." -- 资源控制器
 class ".ucfirst($controller_name)." extends $controller
 {
 ";
@@ -895,6 +896,7 @@ class $table extends Model
             $build = $this->modelbuild($mokuai, $dir, $name);
             $txt = $this->validatacode($mokuai, $name, $data, $fields);
             app('build')->run($build,$txt);
+            $this->success('验证器文件创建完成');
         }
         else{
             //生成验证器代码

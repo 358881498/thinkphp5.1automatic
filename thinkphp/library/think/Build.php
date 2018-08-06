@@ -39,7 +39,7 @@ class Build
      * @param  bool   $suffix 类库后缀
      * @return void
      */
-    public function run(array $build = [], $content1 = false, $namespace = 'app', $suffix = false)
+    public function run(array $build = [], $namespace = 'app', $suffix = false)
     {
         // 锁定
         $lockfile = $this->basePath . 'build.lock';
@@ -59,7 +59,7 @@ class Build
                 $this->buildFile($list);
             } else {
                 // 创建模块
-                $this->module($module, $list, $namespace, $suffix, $content1);
+                $this->module($module, $list, $namespace, $suffix);
             }
         }
 
@@ -109,7 +109,7 @@ class Build
      * @param  bool   $suffix 类库后缀
      * @return void
      */
-    public function module($module = '', $list = [], $namespace = 'app', $suffix = false, $content1 = false)
+    public function module($module = '', $list = [], $namespace = 'app', $suffix = false)
     {
         $module = $module ? $module : '';
 
@@ -157,10 +157,10 @@ class Build
                     $class    = $val . ($suffix ? ucfirst($path) : '');
                     switch ($path) {
                         case 'controller': // 控制器
-                            $content = $content1 ?? "<?php\nnamespace {$space};\n\nclass {$class}\n{\n\n}";
+                            $content = "<?php\nnamespace {$space};\n\nclass {$class}\n{\n\n}";
                             break;
                         case 'model': // 模型
-                            $content = $content1 ?? "<?php\nnamespace {$space};\n\nuse think\Model;\n\nclass {$class} extends Model\n{\n\n}";
+                            $content = "<?php\nnamespace {$space};\n\nuse think\Model;\n\nclass {$class} extends Model\n{\n\n}";
                             break;
                         case 'view': // 视图
                             $filename = $modulePath . $path . DIRECTORY_SEPARATOR . $val . '.html';
@@ -169,7 +169,7 @@ class Build
                             break;
                         default:
                             // 其他文件
-                            $content = $content1 ?? "<?php\nnamespace {$space};\n\nclass {$class}\n{\n\n}";
+                            $content = "<?php\nnamespace {$space};\n\nclass {$class}\n{\n\n}";
                     }
 
                     if (!is_file($filename)) {
@@ -401,7 +401,7 @@ class Build
     protected function checkDirBuild($dirname)
     {
         if (!is_dir($dirname)) {
-            mkdir($dirname, 0777, true);
+            mkdir($dirname, 0755, true);
         }
     }
 }
